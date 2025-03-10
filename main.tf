@@ -1,54 +1,29 @@
 
 resource "aws_security_group" "security_group" {
   name        = var.name
-  description = "Allow inbound traffic"
+  description = "Security group for ${var.name}"
 
-  ingress {
-    description = "SSH port"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = var.cidr_blocks
+  dynamic "ingress" {
+    for_each = var.ingress_rules
+    content {
+      description = ingress.value.description
+      from_port   = ingress.value.from_port
+      to_port     = ingress.value.to_port
+      protocol    = ingress.value.protocol
+      cidr_blocks = ingress.value.cidr_blocks
+    }
   }
 
-  ingress {
-    description = "Jenkins and Tomcat port"
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = var.cidr_blocks
+  dynamic "egress" {
+    for_each = var.egress_rules
+    content {
+      from_port   = egress.value.from_port
+      to_port     = egress.value.to_port
+      protocol    = egress.value.protocol
+      cidr_blocks = egress.value.cidr_blocks
+    }
   }
 
-  ingress {
-    description = "Nexus port"
-    from_port   = 8081
-    to_port     = 8081
-    protocol    = "tcp"
-    cidr_blocks = var.cidr_blocks
-  }
-
-  ingress {
-    description = "SonarQube port"
-    from_port   = 9000
-    to_port     = 9000
-    protocol    = "tcp"
-    cidr_blocks = var.cidr_blocks
-  }
-
-  ingress {
-    description = "https"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = var.cidr_blocks
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
   tags = {
     Name = var.name
   }
