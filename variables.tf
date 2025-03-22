@@ -40,3 +40,15 @@ variable "egress_rules" {
     }
   ]
 }
+
+variable "vpc_id" {
+  description = "The ID of the VPC"
+  type        = string
+  default     = null
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "The tags to assign to the resource."
+  default     = {}
+}

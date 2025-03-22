@@ -2,7 +2,7 @@
 resource "aws_security_group" "security_group" {
   name        = var.name
   description = "Security group for ${var.name}"
-
+  vpc_id      = var.vpc_id
   dynamic "ingress" {
     for_each = var.ingress_rules
     content {
@@ -24,7 +24,5 @@ resource "aws_security_group" "security_group" {
     }
   }
 
-  tags = {
-    Name = var.name
-  }
+  tags = var.tags
 }
